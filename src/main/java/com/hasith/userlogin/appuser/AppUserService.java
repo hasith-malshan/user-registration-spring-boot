@@ -1,5 +1,7 @@
 package com.hasith.userlogin.appuser;
 
+import com.hasith.userlogin.Registration.token.ConfirmationToken;
+import com.hasith.userlogin.Registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,12 +9,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
     private final static String USER_NOT_FOUND_MESSAGE = "User with email %s not found";
 
     @Override
@@ -29,7 +35,11 @@ public class AppUserService implements UserDetailsService {
 
         appUser.setPassword(encodePassword);
         appUserRepository.save(appUser);
-        // TODO: 5/10/2024 Send Confirmation token
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(token, LocalDateTime.now(),LocalDateTime.now().plusMinutes(15),appUser);
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+        // TODO: 5/10/2024 Send Email
         return "It Works";
     }
 }
