@@ -40,6 +40,10 @@ public class AppUserService implements UserDetailsService {
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
         // TODO: 5/10/2024 Send Email
-        return "It Works";
+        return token;
+    }
+
+    public void enableAppUser(String email) {
+        appUserRepository.enableAppUser(email);
     }
 }
