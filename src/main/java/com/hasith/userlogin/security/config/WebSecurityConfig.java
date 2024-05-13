@@ -29,6 +29,7 @@ public class WebSecurityConfig {
                         auth -> auth.requestMatchers("/api/v*/registration/**").permitAll()
                                 .anyRequest().authenticated());
         http.formLogin(Customizer.withDefaults());
+        http.exceptionHandling(Customizer.withDefaults());
         return http.build();
     }
 
